@@ -1,0 +1,1 @@
+let HOME = 'http://localhost:8080';

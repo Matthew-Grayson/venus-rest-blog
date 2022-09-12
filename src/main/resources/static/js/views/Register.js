@@ -13,11 +13,13 @@ export default function Register(props) {
         
                 <form id="register-form">
                     <label for="username">Username</label>
-                    <input id="username" name="username" type="text"/>
+                    <input id="username" name="username" type="text"/><br>
                     <label for="email">Email</label>
-                    <input id="email" name="email" type="email">
+                    <input id="email" name="email" type="email"><br>
                     <label for="password">Password</label>
-                    <input id="password" name="password" type="password"/>
+                    <input id="password" name="password" type="password"/><br>
+                    <label for="confirm">Confirm Password</label>
+                    <input id="confirm" name="confirm" type="password"/><br>
                     <button id="register-btn" type="button">Register</button>
                 </form>
             </body>
@@ -26,27 +28,29 @@ export default function Register(props) {
 }
 
 export function RegisterEvent(){
-    $("#register-btn").click(function(){
+    const registerBtn = document.querySelector('#register-btn')
+    registerBtn.addEventListener('click', function(e) {
+        let username = document.querySelector('#username').value,
+            email = document.querySelector('#email').value,
+            password = document.querySelector('#password').value,
+            confirm = document.querySelector('#confirm').value;
+            if(password !== confirm) {
+                alert('Passwords do not match.')
+            } else {
+                let newUser = {username, email, password};
+                console.log(newUser);
 
-        let newUser = {
-            username: $("#username").val(),
-            email: $("#email").val(),
-            password: $("#password").val()
-        }
+                let request = {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify(newUser)
+                }
 
-        console.log(newUser);
-
-        let request = {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify(newUser)
-        }
-
-        fetch("http://localhost:8080/api/users", request)
-            .then(response => {
-                console.log(response.status);
-                CreateView("/");
-            })
-
+                fetch(`${HOME}/api/users`, request)
+                    .then(response => {
+                        console.log(response.status);
+                        CreateView("/");
+                    })
+            }
     })
 }

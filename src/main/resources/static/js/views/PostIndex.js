@@ -39,20 +39,20 @@ function postBody(posts) {
 
 function addPostHandler() {
     const addBtn = document.querySelector('#add-btn');
-    const title = document.querySelector('#title');
-    const content = document.querySelector('#content');
-    newPost = {
-        title: title.value,
-        content: content.value
-    }
-    console.log(newPost);
     addBtn.addEventListener('click', function(e) {
+        const title = document.querySelector('#title').value;
+        const content = document.querySelector('#content').value;
+        newPost = {
+            title,
+            content
+        }
+        console.log(newPost);
         let request = {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(newPost)
         }
-        fetch('http://localhost:8080/api/posts', request)
+        fetch(`${HOME}/api/posts`, request)
             .then(response => {
                 console.log(newPost);
                 console.log(response.status);
