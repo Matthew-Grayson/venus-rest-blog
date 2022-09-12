@@ -2,6 +2,7 @@ package grayson.venusrestblog.web;
 import grayson.venusrestblog.data.User;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -28,6 +29,7 @@ public class UsersController {
     @PostMapping("")
     private void createUser(@RequestBody User newUser) {
         newUser.setId(nextId++);
+        newUser.setCreatedAt(LocalDate.now());
         users.add(newUser);
     }
 
