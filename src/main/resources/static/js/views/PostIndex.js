@@ -1,22 +1,30 @@
 import CreateView from "../createView.js"
 
+let posts, body, newPost;
+
 export default function PostIndex(props) {
+    posts = props.posts
     return `
-        <header>
-            <h1>Posts Page</h1>
-        </header>
-        <main>
-            <h2>Posts</h2>
-                <div>${props.posts.map(post => `<h3>${post.title}</h3>`).join('')}</div>
-            <h2>Add Post</h2>
-                <form id="add-form">
-                    <label for="title-field">Title</label>
-                    <input id="title-field" name="title-field" type="Enter Title"/>
-                    <label for="content-field">Content</label>
-                    <input id="content-field" name="content-field" type="textarea"/>
-                    <input id="add-btn" type="submit" value="Publish"/>
-                </form>
-        </main>
+        <html>
+            <header>
+                <h1>Posts Page</h1>
+            </header>
+            <main>
+                <h2>Posts</h2>
+                    <div id="post-body">postBody</div>
+                <h2>Add Post</h2>
+                    <form>
+                        <label for="title">Title</label>
+                        <br>
+                        <input id="title" name="title"/>
+                        <br>
+                        <label for="content">Content</label>
+                        <br>
+                        <textarea id="content" name="content"></textarea>
+                        <input id="add-btn" type="submit" value="Publish"/>
+                    </form>
+            </main>
+        </html>
     `;
 }
 export function postSetup() {
@@ -24,16 +32,21 @@ export function postSetup() {
     editPostHandler();
     deletePostHandler();
 }
+function postBody(posts) {
+    body = '';
+
+}
 
 function addPostHandler() {
-    const addBtn = document.querySelector('#add-btn')
-    const title = document.querySelector('#title-field').value
-    const content = document.querySelector('#content-field').value
+    const addBtn = document.querySelector('#add-btn');
+    const title = document.querySelector('#title');
+    const content = document.querySelector('#content');
+    newPost = {
+        title: title.value,
+        content: content.value
+    }
+    console.log(newPost);
     addBtn.addEventListener('click', function(e) {
-        let newPost = {
-            title,
-            content
-        }
         let request = {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
@@ -41,6 +54,7 @@ function addPostHandler() {
         }
         fetch('http://localhost:8080/api/posts', request)
             .then(response => {
+                console.log(newPost);
                 console.log(response.status);
                 CreateView('/posts')
             })

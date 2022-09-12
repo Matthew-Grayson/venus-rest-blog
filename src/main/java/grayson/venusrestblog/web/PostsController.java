@@ -10,6 +10,7 @@ import java.util.Objects;
 @RequestMapping(value = "/api/posts", headers = "Accept=application/json")
 public class PostsController {
     private ArrayList<Post> posts = new ArrayList<>();
+    private long nextId = 1;
     @GetMapping("/")
     public ArrayList<Post> getAll() {
         return posts;
@@ -25,6 +26,7 @@ public class PostsController {
     }
     @PostMapping("/")
     private void createPost(@RequestBody Post newPost) {
+        newPost.setId(nextId++);
         posts.add(newPost);
     }
 
