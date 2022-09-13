@@ -1,5 +1,6 @@
 import Home from "./views/Home.js";
 import PostIndex, {postSetup} from "./views/PostIndex.js";
+import prepareUserHTML, {prepareUserJS} from "./views/User.js"
 import About from "./views/About.js";
 import Error404 from "./views/Error404.js";
 import Loading from "./views/Loading.js";
@@ -43,6 +44,15 @@ export default function router(URI) {
             uri: '/posts',
             title: 'All Posts',
             viewEvent: postSetup
+        },
+        '/me': {
+            returnView: prepareUserHTML,
+            state: {
+                me: 'api/users/me'
+            },
+            uri: '/me',
+            title: 'User Info',
+            viewEvent: 'prepareUserJS'
         },
         '/about': {
             returnView: About,

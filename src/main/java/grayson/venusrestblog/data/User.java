@@ -3,11 +3,10 @@ package grayson.venusrestblog.data;
 import lombok.*;
 
 import java.time.LocalDate;
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@ToString
+import java.util.Collection;
+
+@Getter @Setter @ToString
+@NoArgsConstructor @AllArgsConstructor
 
 public class User {
     private long id;
@@ -16,4 +15,5 @@ public class User {
     private String password;
     private LocalDate createdAt;
     private UserRole role;
+    private Collection<Post> posts;
 }
