@@ -1,8 +1,8 @@
 package grayson.venusrestblog.data;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Getter @Setter @ToString
@@ -13,12 +13,20 @@ public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "category_name", nullable = false, length = 100)
+    @Column(name = "category_name", nullable = false)
     private String name;
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    private Role role;
-    @Transient
+    @ManyToMany(
+            fetch = FetchType.LAZY,
+            cascade = {CascadeType.DETACH, CascadeType.REFRESH},
+            targetEntity = Post.class)
+    @JoinTable(
+            name="post_category",
+            joinColumns = {@JoinColumn(name = "category_id", nullable = false, updatable = false)},
+            inverseJoinColumns = {@JoinColumn(name="post_id", nullable = false, updatable = false)},
+            foreignKey = @ForeignKey(ConstraintMode.CONSTRAINT),
+            inverseForeignKey = @ForeignKey(ConstraintMode.CONSTRAINT)
+    )
+    @JsonIgnoreProperties("categories")
     private List<Post> relatedPosts;
 
 }
