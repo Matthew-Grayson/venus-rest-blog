@@ -1,6 +1,7 @@
 package grayson.venusrestblog.web;
 import grayson.venusrestblog.data.User;
 import grayson.venusrestblog.data.UsersRepository;
+import grayson.venusrestblog.web.dto.UpdateUserDto;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -35,6 +36,10 @@ public class UsersController {
     public void updateUser(@RequestBody User update, @PathVariable long id) {
         update.setId(id);
         usersRepository.save(update);
+    }
+    @PutMapping
+    public void update(@RequestBody UpdateUserDto updateUserDto){
+        System.out.println(updateUserDto);
     }
 //    @PatchMapping("/${id}/updatePassword")
 //    public void updatePassword()

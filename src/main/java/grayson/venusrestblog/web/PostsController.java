@@ -1,12 +1,13 @@
 package grayson.venusrestblog.web;
 
-import grayson.venusrestblog.data.CategoriesRepository;
-import grayson.venusrestblog.data.Post;
-import grayson.venusrestblog.data.PostsRepository;
-import grayson.venusrestblog.data.UsersRepository;
+import grayson.venusrestblog.data.*;
+import grayson.venusrestblog.services.EmailService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,27 +18,49 @@ public class PostsController {
     private final PostsRepository postsRepository;
     private final UsersRepository usersRepository;
     private final CategoriesRepository categoriesRepository;
+    private final EmailService emailService;
+
 
 
     @GetMapping("")
     public List<Post> getAll() {
         return postsRepository.findAll();
     }
+
+//    @GetMapping("/{id}")
+//    private Optional<Post> getById(@PathVariable long id) {
+//        return postsRepository.findById(id);
+//    }
     @GetMapping("/{id}")
-    private Optional<Post> getById(@PathVariable long id) {
-        return postsRepository.findById(id);
+    public Optional<Post> fetchPostById(@PathVariable long id) {
+        Optional<Post> optionalPost = postsRepository.findById(id);
+        if(optionalPost.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Post id " + id + " not found");
+        }
+        return optionalPost;
     }
     @PostMapping("")
     private void createPost(@RequestBody Post newPost) {
+        User author = usersRepository.findById(1L).get();
+        newPost.setAuthor(author);
+//        Category cat1 = categoriesRepository.findById(1L).get();
+//        Category cat2 = categoriesRepository.findById(2L).get();
+//        newPost.setCategories(new ArrayList<>());
+//        newPost.getCategories().add(cat1);
+//        newPost.getCategories().add(cat2);
         postsRepository.save(newPost);
     }
 
     @DeleteMapping("/{id}")
     private void deletePost(@PathVariable long id) {
+        Optional<Post> optionalPost = postsRepository.findById(id);
+        if(optionalPost.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Post id " + id + " not found");
+        }
         postsRepository.deleteById(id);
     }
 
-    @PatchMapping("/{id}")
+    @PutMapping("/{id}")
     public void updatePost(@RequestBody Post update, @PathVariable long id) {
         update.setId(id);
         postsRepository.save(update);

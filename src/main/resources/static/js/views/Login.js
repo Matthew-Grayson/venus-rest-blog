@@ -13,10 +13,10 @@ export default function Login(props) {
                 <input id="username" name="username" type="text" class="form-control"  placeholder="Username"/>
             </div>
             <div class="form-group">
-                <label for="password">Email</label>
-                <input id="password" name="password" type="password" class="form-control" placeholder="Password">
+                <label for="password">Password</label>
+                <input id="password" name="password" type="password" class="form-control" placeholder="Password"/>
             </div>
-            <button id="register-btn" type="submit" class="btn btn-primary m-1">Login</button>
+            <button id="login-btn" type="submit" class="btn btn-primary m-1">Login</button>
         </form>
     </body>
 </html>`;

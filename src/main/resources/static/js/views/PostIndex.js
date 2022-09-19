@@ -1,10 +1,8 @@
 import CreateView from "../createView.js"
-import createView from "../createView.js";
 
 let posts, body, newPost;
-
 export default function PostIndex(props) {
-    posts = props.posts
+    posts = props.posts;
     const body = postBody(props.posts)
     return `
         <html>
@@ -15,14 +13,21 @@ export default function PostIndex(props) {
                 <div id="post-body">${body}</div>
                 <h2>Add Post</h2>
                     <form>
-                        <label for="title">Title</label>
-                        <br>
-                        <input id="title" name="title"/>
-                        <br>
-                        <label for="content">Content</label>
-                        <br>
-                        <textarea id="content" name="content"></textarea>
-                        <input id="add-btn" type="submit" value="Publish"/>
+                        <div class="form-group">
+                            <label for="title">Title</label>
+                            <input id="title" name="title" type="text" class="form-control" placeholder="Title">
+                        </div>
+                        <div class="form-group">
+                            <label for="content">Content</label>
+                            <textarea id="content" name="content" class="form-control"  placeholder="Content"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="category-select">Category</label>
+                            <select class="form-select" multiple id="category-select" >
+                                ${populateCategorySelect(props.categories)}
+                            </select>
+                        </div>
+                        <button id="add-btn" type="submit" class="btn btn-primary m-1">Publish</button>
                     </form>
             </main>
         </html>
@@ -52,7 +57,7 @@ function postBody(posts) {
             <td>${post.title}</td>
             <td>${post.content}</td>
             <td>${post.author.username}</td>
-            <td>${categories}</td>
+            <td>${post.categories.map(el => el.name)}</td>
             <td><i data-id=${post.id} class="bi bi-pencil-fill edit-post"></i></td>
             <td><i data-id=${post.id} class="bi bi-trash3-fill delete-post" style="color: red"></i></td>
             </tr>`;
@@ -66,9 +71,14 @@ function handleAddPost() {
     addBtn.addEventListener('click', function(e) {
         const title = document.querySelector('#title').value;
         const content = document.querySelector('#content').value;
+        let categories = [];
+        Array.from(document.querySelector('#category-select').selectedOptions).map(el => {
+                categories.push({'id': el.getAttribute('data-id'), 'name': el.value})
+        });
         newPost = {
             title,
-            content
+            content,
+            categories
         }
         console.log(newPost);
         let request = {
@@ -89,26 +99,37 @@ function handleEditPost(posts) {
     editBtns.forEach(function(btn)  {
         btn.addEventListener('click', function(e) {
             let postId = this.getAttribute('data-id');
-            editPost(postId);
+            editPost(parseInt(postId));
         })
     })
 }
+function populateCategorySelect(catProps) {
+    let html = '';
+    return catProps.reduce((html, el) => {
+        return html += `<option data-id=${el.id} value=${el.name}>${el.name}</option>`
+    }, '')
+}
+//TODO separate getpostbyId function
 function editPost(postId) {
-    let post = getPostById(postId),
-        submitBtn = document.querySelector('#add-btn')
+    let post;
+    posts.forEach(function(el) {
+        if(el.id === postId) {
+            post = el;
+        }
+    })
+    let submitBtn = document.querySelector('#add-btn');
     document.querySelector('#title').value = post.title;
     document.querySelector('#content').value = post.content;
-    submitBtn.value = 'Save Changes';
     submitBtn.addEventListener('click', function(e) {
-        let title = document.querySelector('#title').value,
+        const title = document.querySelector('#title').value,
             content = document.querySelector('#content').value,
             update = {title, content},
             request = {
-            method: 'PATCH',
+            method: 'PUSH',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(update)
         }
-        fetch(`${HOME}/api/${postId}`, request)
+        fetch(`${HOME}/api/posts/${postId}`, request)
             .then(function(response) {
                 console.log(update);
                 console.log(response.status);
@@ -129,20 +150,24 @@ function deletePost(postId) {
         method: 'DELETE',
         headers: {'Content-Type': 'application/json'}
     }
-    fetch(`${HOME}/api/${postId}`, request)
+    fetch(`${HOME}/api/posts/${postId}`, request)
         .then(function(response) {
             if(response.status !== 200) {
                 console.log(`fetch returned status code: ${response.status}`);
                 console.log(response.statusText);
                 return;
             }
-            createView('/posts')
+            CreateView('/posts')
         })
 }
 
-function getPostById(postId) {
-    posts.forEach(function(post) {
-        if(post.id === postId) return post;
-    })
-    return false;
-}
+// function getPostById(postId) {
+//     posts.forEach(function(post) {
+//         if(post.id == postId) {
+//             console.log("post =");
+//             console.log(post);
+//             return post;
+//         }
+//     })
+//     return false;
+// }

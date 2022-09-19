@@ -1,6 +1,5 @@
 package grayson.venusrestblog.data;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,6 +24,18 @@ public class Post {
     @ManyToOne @JsonIgnoreProperties({"posts", "password"})
     private User author;
 
-    @Transient
+    @ManyToMany(
+            fetch = FetchType.LAZY,
+            cascade = {CascadeType.DETACH, CascadeType.REFRESH},
+            targetEntity = Category.class)
+    @JoinTable(
+            name="post_category",
+            joinColumns = {@JoinColumn(name = "post_id", nullable = false, updatable = false)},
+            inverseJoinColumns = {@JoinColumn(name="category_id", nullable = false, updatable = false)},
+            foreignKey = @ForeignKey(ConstraintMode.CONSTRAINT),
+            inverseForeignKey = @ForeignKey(ConstraintMode.CONSTRAINT)
+    )
+
+    @JsonIgnoreProperties("posts")
     private Collection<Category> categories;
 }
