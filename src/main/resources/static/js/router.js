@@ -1,12 +1,12 @@
 import Home from "./views/Home.js";
 import PostIndex, {postSetup} from "./views/PostIndex.js";
-import prepareUserHTML, {prepareUserJS} from "./views/User.js"
+import prepareUserHTML, {prepareUserJS} from "./views/User.js";
 import About from "./views/About.js";
 import Error404 from "./views/Error404.js";
 import Loading from "./views/Loading.js";
 import Login from "./views/Login.js";
 import LoginEvent from "./auth.js";
-import Register from "./views/Register.js"
+import Register from "./views/Register.js";
 import {RegisterEvent} from "./views/Register.js";
 
 /**
@@ -77,4 +77,3 @@ export default function router(URI) {
 
     return routes[URI];
 }
-

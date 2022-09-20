@@ -1,1 +1,1 @@
-let HOME = 'http://localhost:8080';
+const HOME = 'http://localhost:8080';

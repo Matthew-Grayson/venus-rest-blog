@@ -5,8 +5,7 @@ export default function prepareUserHTML(props) {
     me = props.me;
     return `
         <h1>Welcome, ${props.me.username}!</h1>
-        <h2>${props.me.email}</h2>
-        
+        <h2>${props.me.email}</h2>    
         <form>
             <label for="old-pass">Old Password</label>
             <input type="password" id="old-pass" name="old-pass">
@@ -22,12 +21,10 @@ export default function prepareUserHTML(props) {
         </form>
     `;
 }
-
 export function prepareUserJS() {
     handleToggleShowPassword();
     handleUpdatePassword();
 }
-
 function handleToggleShowPassword() {
     const showBtn = document.querySelector('#show-pass');
     showBtn.addEventListener('click', (e) => {
@@ -38,13 +35,10 @@ function handleToggleShowPassword() {
             oldPass.setAttribute('type', 'text');
             newPass.setAttribute('type', 'text');
             confirm.setAttribute('type', 'text');
-
-
         }
-
     })
 }
 
-function     handleUpdatePassword() {
+function handleUpdatePassword() {
 
 }

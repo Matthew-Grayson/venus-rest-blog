@@ -43,11 +43,6 @@ public class PostsController {
     private void createPost(@RequestBody Post newPost) {
         User author = usersRepository.findById(1L).get();
         newPost.setAuthor(author);
-//        Category cat1 = categoriesRepository.findById(1L).get();
-//        Category cat2 = categoriesRepository.findById(2L).get();
-//        newPost.setCategories(new ArrayList<>());
-//        newPost.getCategories().add(cat1);
-//        newPost.getCategories().add(cat2);
         postsRepository.save(newPost);
     }
 
