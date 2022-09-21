@@ -1,6 +1,7 @@
 import CreateView from "../createView.js"
+import {getHeaders} from "../auth.js";
 
-let posts, body, newPost;
+let posts, body, newPost, postId;
 export default function PostIndex(props) {
     posts = props.posts;
     const body = postBody(props.posts)
@@ -57,7 +58,7 @@ function postBody(posts) {
             <td>${post.title}</td>
             <td>${post.content}</td>
             <td>${post.author.username}</td>
-            <td>${post.categories.map(el => el.name)}</td>
+            <td>${post.categories.map(el => el.name).join(', ')}</td>
             <td><i data-id=${post.id} class="bi bi-pencil-fill edit-post"></i></td>
             <td><i data-id=${post.id} class="bi bi-trash3-fill delete-post" style="color: red"></i></td>
             </tr>`;
@@ -68,38 +69,40 @@ function postBody(posts) {
 
 function handleAddPost() {
     const addBtn = document.querySelector('#add-btn');
-    addBtn.addEventListener('click', function(e) {
-        const title = document.querySelector('#title').value;
-        const content = document.querySelector('#content').value;
-        let categories = [];
-        Array.from(document.querySelector('#category-select').selectedOptions).map(el => {
-                categories.push({'id': el.getAttribute('data-id'), 'name': el.value})
-        });
-        newPost = {
-            title,
-            content,
-            categories
-        }
-        console.log(newPost);
-        let request = {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(newPost)
-        }
-        fetch(`${HOME}/api/posts`, request)
-            .then(function(response) {
-                console.log(newPost);
-                console.log(response.status);
-            })
-        CreateView('/posts')
-    })
+    addBtn.addEventListener('click', addPost)
 }
+function addPost() {
+    const title = document.querySelector('#title').value;
+    const content = document.querySelector('#content').value;
+    let categories = [];
+    Array.from(document.querySelector('#category-select').selectedOptions).map(el => {
+        categories.push({'id': el.getAttribute('data-id'), 'name': el.value})
+    });
+    newPost = {
+        title,
+        content,
+        categories
+    }
+    console.log(newPost);
+    let request = {
+        method: 'POST',
+        headers: getHeaders(),
+        body: JSON.stringify(newPost)
+    }
+    fetch(`${HOME}/api/posts`, request)
+        .then(function(response) {
+            console.log(newPost);
+            console.log(response.status);
+        })
+    CreateView('/posts')
+}
+
 function handleEditPost(posts) {
     const editBtns = document.querySelectorAll('.edit-post');
     editBtns.forEach(function(btn)  {
         btn.addEventListener('click', function(e) {
-            let postId = this.getAttribute('data-id');
-            editPost(parseInt(postId));
+            postId = this.getAttribute('data-id');
+            populateEditPost(parseInt(postId));
         })
     })
 }
@@ -109,34 +112,51 @@ function populateCategorySelect(catProps) {
         return html += `<option data-id=${el.id} value=${el.name}>${el.name}</option>`
     }, '')
 }
-//TODO separate getpostbyId function
-function editPost(postId) {
+function populateEditPost(id) {
     let post;
+    postId = id;
     posts.forEach(function(el) {
-        if(el.id === postId) {
+        if(el.id === id) {
             post = el;
         }
     })
     let submitBtn = document.querySelector('#add-btn');
     document.querySelector('#title').value = post.title;
     document.querySelector('#content').value = post.content;
-    submitBtn.addEventListener('click', function(e) {
-        const title = document.querySelector('#title').value,
-            content = document.querySelector('#content').value,
-            update = {title, content},
-            request = {
-            method: 'PUSH',
-            headers: {'Content-Type': 'application/json'},
+    //TODO: populate categories menu
+    for(let el of document.querySelector('#category-select').children) {
+        el.removeAttribute('selected')
+    }
+    console.log(post.categories.map(el => el.id));
+    post.categories.forEach(el => {
+        document.querySelector('#category-select')[el.id-1].setAttribute('selected', '');
+    })
+    submitBtn.innerHTML = 'Save Changes';
+    submitBtn.removeEventListener('click', addPost)
+    submitBtn.addEventListener('click', editPost)
+}
+function editPost() {
+    const title = document.querySelector('#title').value,
+        content = document.querySelector('#content').value,
+        categories = [];
+        Array.from(document.querySelector('#category-select').selectedOptions).map(el => {
+            categories.push({'id': el.getAttribute('data-id'), 'name': el.value})
+        });
+        console.log(postId)
+        let update = {title, content, categories},
+        request = {
+            method: 'PATCH',
+            headers: getHeaders(),
             body: JSON.stringify(update)
         }
-        fetch(`${HOME}/api/posts/${postId}`, request)
-            .then(function(response) {
-                console.log(update);
-                console.log(response.status);
-            })
-        CreateView('/posts');
-    })
+    fetch(`${HOME}/api/posts/${postId}`, request)
+        .then(function(response) {
+            console.log(update);
+            console.log(response.status);
+        })
+    CreateView('/posts');
 }
+
 function handleDeletePost(posts) {
     const deleteBtns = document.querySelectorAll('.delete-post');
     deleteBtns.forEach(function(btn) {
@@ -145,12 +165,12 @@ function handleDeletePost(posts) {
         })
     })
 }
-function deletePost(postId) {
+function deletePost(id) {
     let request = {
         method: 'DELETE',
-        headers: {'Content-Type': 'application/json'}
+        headers: getHeaders()
     }
-    fetch(`${HOME}/api/posts/${postId}`, request)
+    fetch(`${HOME}/api/posts/${id}`, request)
         .then(function(response) {
             if(response.status !== 200) {
                 console.log(`fetch returned status code: ${response.status}`);

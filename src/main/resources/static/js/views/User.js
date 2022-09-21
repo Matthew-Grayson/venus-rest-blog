@@ -3,6 +3,8 @@ import CreateView from "../createView.js";
 let me;
 export default function prepareUserHTML(props) {
     me = props.me;
+    console.log(props);
+    console.log(props.me);
     return `
         <h1>Welcome, ${props.me.username}!</h1>
         <h2>${props.me.email}</h2>    

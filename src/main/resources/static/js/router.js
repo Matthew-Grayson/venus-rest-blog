@@ -49,7 +49,7 @@ export default function router(URI) {
         '/me': {
             returnView: prepareUserHTML,
             state: {
-                me: 'api/users/me'
+                me: '/api/users/me'
             },
             uri: '/me',
             title: 'User Info',

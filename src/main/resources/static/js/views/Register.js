@@ -56,7 +56,7 @@ export function RegisterEvent(){
                     body: JSON.stringify(newUser)
                 }
 
-                fetch(`${HOME}/api/users`, request)
+                fetch(`${HOME}/api/users/create`, request)
                     .then(response => {
                         console.log(response.status);
                         CreateView("/");

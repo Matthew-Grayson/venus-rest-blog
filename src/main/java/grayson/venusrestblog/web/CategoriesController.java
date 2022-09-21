@@ -2,9 +2,10 @@ package grayson.venusrestblog.web;
 
 import grayson.venusrestblog.data.CategoriesRepository;
 import grayson.venusrestblog.data.Category;
-import grayson.venusrestblog.data.PostsRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -23,4 +24,14 @@ public class CategoriesController {
     private Category getPostsByCategory(@RequestParam String categoryName) {
         return new Category();
     }
+
+    @GetMapping("/search")
+    private Category getCategoryByName(@RequestParam String categoryName) {
+        Category cat = categoriesRepository.findByName(categoryName);
+        if(cat == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Category " + categoryName + " not found");
+        }
+        return cat;
+    }
 }
+

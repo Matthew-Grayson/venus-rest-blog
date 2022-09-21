@@ -3,7 +3,6 @@ package grayson.venusrestblog.security;
 import grayson.venusrestblog.data.User;
 import grayson.venusrestblog.data.UsersRepository;
 import lombok.AllArgsConstructor;
-import org.glassfish.jaxb.core.v2.TODO;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
