@@ -1,34 +1,32 @@
 package grayson.venusrestblog.web;
+
 import grayson.venusrestblog.data.Role;
 import grayson.venusrestblog.data.User;
 import grayson.venusrestblog.data.UsersRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-@RestController
-@RequestMapping(value = "/api/users", headers = "Accept=application/json")
-public class UsersController {
-    private final UsersRepository usersRepository;
-    private PasswordEncoder passwordEncoder;
 
-    public UsersController(UsersRepository usersRepository, PasswordEncoder passwordEncoder) {
-        this.usersRepository = usersRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
+@AllArgsConstructor
+@RestController
+@RequestMapping(value = "/api/users", headers = "application/json")
+public class UsersController {
+    private UsersRepository usersRepository;
+    private PasswordEncoder passwordEncoder;
 
     @GetMapping("")
     public List<User> getAll() {
         return usersRepository.findAll();
     }
     @GetMapping("/me")
-    private Optional<User> getMe(OAuth2Authentication auth) {
+    public Optional<User> getMe(OAuth2Authentication auth) {
         if(auth ==  null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Please login");
         }
@@ -36,7 +34,7 @@ public class UsersController {
         return Optional.of(user);
     }
     @GetMapping("/{id}")
-    private Optional<User> getById(@PathVariable long id) {
+    public Optional<User> getById(@PathVariable long id) {
         return usersRepository.findById(id);
     }
     @PostMapping("/create")
