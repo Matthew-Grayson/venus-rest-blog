@@ -53,7 +53,7 @@ export default function router(URI) {
             },
             uri: '/me',
             title: 'User Info',
-            viewEvent: 'prepareUserJS'
+            viewEvent: prepareUserJS
         },
         '/about': {
             returnView: About,

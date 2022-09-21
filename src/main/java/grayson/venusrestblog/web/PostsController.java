@@ -27,6 +27,9 @@ public class PostsController {
 
     @GetMapping("")
     public List<Post> getAll() {
+        User user = usersRepository.findByUsername("docrob");
+        System.out.println(user);
+
         return postsRepository.findAll();
     }
 

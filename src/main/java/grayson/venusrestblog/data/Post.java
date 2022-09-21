@@ -9,7 +9,6 @@ import java.util.Collection;
 
 @Getter @Setter @ToString
 @NoArgsConstructor @AllArgsConstructor
-@RestController
 @Entity @Table(name = "posts")
 public class Post {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
