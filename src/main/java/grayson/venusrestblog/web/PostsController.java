@@ -16,7 +16,7 @@ import java.util.Optional;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping(value = "/api/posts", headers = "application/json")
+@RequestMapping(value = "/api/posts", produces = "application/json")
 public class PostsController {
     private final PostsRepository postsRepository;
     private final UsersRepository usersRepository;

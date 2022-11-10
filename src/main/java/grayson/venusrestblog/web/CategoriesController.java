@@ -11,8 +11,8 @@ import java.util.List;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping(value = "/api/categories", headers = "application/json")
-public class CategoriesController {
+@RequestMapping(value = "/api/categories", produces = "application/json")
+public class    CategoriesController {
     private final CategoriesRepository categoriesRepository;
 
 

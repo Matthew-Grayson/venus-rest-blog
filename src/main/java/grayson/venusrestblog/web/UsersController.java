@@ -16,7 +16,7 @@ import java.util.Optional;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping(value = "/api/users", headers = "application/json")
+@RequestMapping(value = "/api/users", produces = "application/json")
 public class UsersController {
     private UsersRepository usersRepository;
     private PasswordEncoder passwordEncoder;

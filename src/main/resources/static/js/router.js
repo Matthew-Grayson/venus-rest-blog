@@ -40,7 +40,8 @@ export default function router(URI) {
             returnView: PostIndex,
             state: {
                 posts: '/api/posts',
-                categories: '/api/categories'
+                categories: '/api/categories',
+                me: '/api/users/me'
             },
             uri: '/posts',
             title: 'All Posts',
@@ -53,7 +54,7 @@ export default function router(URI) {
             },
             uri: '/me',
             title: 'User Info',
-            viewEvent: 'prepareUserJS'
+            viewEvent: prepareUserJS
         },
         '/about': {
             returnView: About,

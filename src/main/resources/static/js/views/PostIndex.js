@@ -1,9 +1,10 @@
 import CreateView from "../createView.js"
 import {getHeaders} from "../auth.js";
 
-let posts, body, newPost, postId;
+let me, posts, body, newPost, postId;
 export default function PostIndex(props) {
     posts = props.posts;
+    me = props.me;
     const body = postBody(props.posts)
     return `
         <html>
@@ -54,14 +55,25 @@ function postBody(posts) {
     `;
     for (let i = 0; i < posts.length; i++) {
         const post = posts[i];
-        body += `<tr>
-            <td>${post.title}</td>
-            <td>${post.content}</td>
-            <td>${post.author.username}</td>
-            <td>${post.categories.map(el => el.name).join(', ')}</td>
-            <td><i data-id=${post.id} class="bi bi-pencil-fill edit-post"></i></td>
-            <td><i data-id=${post.id} class="bi bi-trash3-fill delete-post" style="color: red"></i></td>
-            </tr>`;
+        const author = post.author.username;
+        if(me.username === author || me.role === "ADMIN") {
+            body += `<tr>
+                <td>${post.title}</td>
+                <td>${post.content}</td>
+                <td>${author}</td>
+                <td>${post.categories.map(el => el.name).join(', ')}</td>
+                <td><i data-id=${post.id} class="bi bi-pencil-fill edit-post"></i></td>
+                <td><i data-id=${post.id} class="bi bi-trash3-fill delete-post" style="color: red"></i></td>
+                </tr>`;
+        } else {
+            body += `<tr>
+                <td>${post.title}</td>
+                <td>${post.content}</td>
+                <td>${author}</td>
+                <td>${post.categories.map(el => el.name).join(', ')}</td>
+                </tr>`;
+        }
+
     }
     body += `</tbody></table>`;
     return body;
